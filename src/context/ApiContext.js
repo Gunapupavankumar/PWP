@@ -22,6 +22,7 @@ export const ApiProvider = ({ children }) => {
   // Goals APIs
   const getGoals = (params) => axios.get(`${API_BASE_URL}/goals`, { params });
   const createGoal = (data) => axios.post(`${API_BASE_URL}/goals`, data);
+  const updateGoal = (id, data) => axios.patch(`${API_BASE_URL}/goals/${id}`, data);
   const deleteGoal = (id) => axios.delete(`${API_BASE_URL}/goals/${id}`);
 
   // Reminders APIs
@@ -40,6 +41,7 @@ export const ApiProvider = ({ children }) => {
     updateUser,
     getGoals,
     createGoal,
+    updateGoal,
     deleteGoal,
     getReminders,
     updateReminder,

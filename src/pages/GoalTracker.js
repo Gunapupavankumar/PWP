@@ -10,15 +10,17 @@ import Button from '../components/Button';
 
 const GoalTracker = () => {
   const { user, logout } = useAuth();
-  const { getGoals, createGoal } = useApi();
+  const { getGoals, createGoal, updateGoal, deleteGoal } = useApi();
   const navigate = useNavigate();
   const [goals, setGoals] = useState([]);
   const [message, setMessage] = useState('');
+  const [editingGoal, setEditingGoal] = useState(null);
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting }
   } = useForm({
     defaultValues: {
@@ -54,9 +56,17 @@ const GoalTracker = () => {
         sleepHours: parseFloat(data.sleepHours)
       };
 
-      await createGoal(goalData);
+      if (editingGoal) {
+        // Update existing goal
+        await updateGoal(editingGoal.id, goalData);
+        setMessage('Goal updated successfully! ✅');
+        setEditingGoal(null);
+      } else {
+        // Create new goal
+        await createGoal(goalData);
+        setMessage('Goal logged successfully! ✅');
+      }
       
-      setMessage('Goal logged successfully! ✅');
       reset({
         date: new Date().toISOString().split('T')[0],
         steps: '',
@@ -68,7 +78,43 @@ const GoalTracker = () => {
       
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
-      setMessage('Error logging goal. Please try again.');
+      setMessage('Error saving goal. Please try again.');
+    }
+  };
+
+  const handleEdit = (goal) => {
+    setEditingGoal(goal);
+    setValue('date', goal.date);
+    setValue('steps', goal.steps);
+    setValue('waterIntake', goal.waterIntake);
+    setValue('sleepHours', goal.sleepHours);
+    setMessage('');
+    
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingGoal(null);
+    reset({
+      date: new Date().toISOString().split('T')[0],
+      steps: '',
+      waterIntake: '',
+      sleepHours: ''
+    });
+    setMessage('');
+  };
+
+  const handleDelete = async (goalId) => {
+    if (window.confirm('Are you sure you want to delete this goal entry?')) {
+      try {
+        await deleteGoal(goalId);
+        setMessage('Goal deleted successfully! 🗑️');
+        fetchGoals();
+        setTimeout(() => setMessage(''), 3000);
+      } catch (error) {
+        setMessage('Error deleting goal. Please try again.');
+      }
     }
   };
 
@@ -99,7 +145,18 @@ const GoalTracker = () => {
         <div className="p-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Log Goals Form */}
-            <Card title="Log Today's Goals" icon="📝">
+            <Card 
+              title={editingGoal ? '✏️ Edit Goal' : '📝 Log Today\'s Goals'} 
+              icon=""
+            >
+              {editingGoal && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Editing goal from {editingGoal.date}</strong>
+                  </p>
+                </div>
+              )}
+              
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <Input
                   label="Date"
@@ -176,24 +233,40 @@ const GoalTracker = () => {
                   })}
                 />
 
-                {message && (
-                  <div className={`px-4 py-3 rounded-lg ${
-                    message.includes('Error') 
-                      ? 'bg-red-50 border border-red-200 text-red-700' 
-                      : 'bg-green-50 border border-green-200 text-green-700'
-                  }`}>
-                    {message}
-                  </div>
-                )}
-
-                <Button type="submit" fullWidth disabled={isSubmitting}>
-                  {isSubmitting ? 'Logging...' : 'Log Goals'}
-                </Button>
+                <div className="flex gap-3">
+                  <Button type="submit" fullWidth disabled={isSubmitting}>
+                    {isSubmitting 
+                      ? (editingGoal ? 'Updating...' : 'Logging...') 
+                      : (editingGoal ? 'Update Goal' : 'Log Goals')
+                    }
+                  </Button>
+                  
+                  {editingGoal && (
+                    <Button 
+                      type="button" 
+                      onClick={handleCancelEdit} 
+                      variant="secondary"
+                      className="w-auto"
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </div>
               </form>
             </Card>
 
             {/* Goal History */}
             <Card title="Your Goal History" icon="📊">
+              {message && (
+                <div className={`mb-4 px-4 py-3 rounded-lg ${
+                  message.includes('Error') 
+                    ? 'bg-red-50 border border-red-200 text-red-700' 
+                    : 'bg-green-50 border border-green-200 text-green-700'
+                }`}>
+                  {message}
+                </div>
+              )}
+              
               {goals.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -203,15 +276,39 @@ const GoalTracker = () => {
                         <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">Steps</th>
                         <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">Water</th>
                         <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">Sleep</th>
+                        <th className="text-right py-3 px-2 text-sm font-semibold text-gray-700">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {goals.map(goal => (
-                        <tr key={goal.id} className="border-b border-gray-100 hover:bg-gray-50">
+                        <tr 
+                          key={goal.id} 
+                          className={`border-b border-gray-100 hover:bg-gray-50 ${
+                            editingGoal?.id === goal.id ? 'bg-blue-50' : ''
+                          }`}
+                        >
                           <td className="py-3 px-2 text-sm">{goal.date}</td>
                           <td className="py-3 px-2 text-sm">{goal.steps.toLocaleString()}</td>
                           <td className="py-3 px-2 text-sm">{goal.waterIntake}</td>
                           <td className="py-3 px-2 text-sm">{goal.sleepHours}h</td>
+                          <td className="py-3 px-2 text-sm text-right">
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => handleEdit(goal)}
+                                className="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded hover:bg-blue-200 transition-colors"
+                                title="Edit goal"
+                              >
+                                ✏️ Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(goal.id)}
+                                className="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded hover:bg-red-200 transition-colors"
+                                title="Delete goal"
+                              >
+                                🗑️ Delete
+                              </button>
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

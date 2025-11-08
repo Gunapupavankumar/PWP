@@ -45,28 +45,12 @@
   ],
   "goals": [
     {
-      "id": 1,
-      "userId": 1,
-      "date": "2025-11-08",
-      "steps": 8500,
-      "waterIntake": 7,
-      "sleepHours": 7.5
-    },
-    {
-      "id": 2,
-      "userId": 1,
-      "date": "2025-11-07",
-      "steps": 10200,
-      "waterIntake": 8,
-      "sleepHours": 8
-    },
-    {
       "id": 3,
       "userId": 1,
       "date": "2025-11-06",
-      "steps": 6800,
+      "steps": 7000,
       "waterIntake": 6,
-      "sleepHours": 6.5
+      "sleepHours": 8
     },
     {
       "id": 4,
@@ -135,15 +119,6 @@
       "name": "John Doe",
       "compliance": "good",
       "lastCheckup": "2025-10-15",
-      "missedAppointments": 0
-    },
-    {
-      "id": 2,
-      "providerId": 2,
-      "patientId": 3,
-      "name": "Jane Wilson",
-      "compliance": "excellent",
-      "lastCheckup": "2025-11-08",
       "missedAppointments": 0
     }
   ],
