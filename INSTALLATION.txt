@@ -1,0 +1,106 @@
+========================================
+HEALTHCARE WELLNESS PORTAL
+Quick Installation Guide
+========================================
+
+PROBLEM: PowerShell Script Execution Error
+SOLUTION: Use Command Prompt (CMD) instead
+
+========================================
+STEP-BY-STEP INSTALLATION
+========================================
+
+1. Open Command Prompt (CMD) - NOT PowerShell
+   - Press Windows Key + R
+   - Type: cmd
+   - Press Enter
+
+2. Navigate to project folder:
+   cd C:\Users\nikhi\OneDrive\Desktop\HCL_TECH\healthcare-portal
+
+3. Install dependencies:
+   npm install
+
+4. Start JSON Server (Terminal 1):
+   npm run server
+   
+   Keep this terminal open!
+
+5. Start React App (Terminal 2):
+   Open a NEW Command Prompt window
+   cd C:\Users\nikhi\OneDrive\Desktop\HCL_TECH\healthcare-portal
+   npm start
+
+========================================
+ALTERNATIVE: Use Batch Files
+========================================
+
+Double-click these files in order:
+1. install.cmd (installs dependencies)
+2. start-server.cmd (starts JSON server)
+3. start-app.cmd (starts React app)
+
+========================================
+ACCESS THE APPLICATION
+========================================
+
+React App: http://localhost:3000
+JSON Server: http://localhost:5000
+
+========================================
+TEST ACCOUNTS
+========================================
+
+PATIENT:
+Email: patient@test.com
+Password: password123
+
+PROVIDER:
+Email: provider@test.com
+Password: password123
+
+========================================
+FEATURES INCLUDED
+========================================
+
+✅ Tailwind CSS styling
+✅ Responsive design
+✅ Reusable components (Button, Card, Input, StatCard, Sidebar)
+✅ Context API (AuthContext, ApiContext)
+✅ Patient Dashboard with wellness tracking
+✅ Goal Tracker with history
+✅ Profile Management
+✅ Provider Dashboard
+✅ Health Information page
+✅ HIPAA compliance information
+✅ Role-based access control
+
+========================================
+PROJECT STRUCTURE
+========================================
+
+src/
+├── components/       # Reusable UI components
+├── context/          # State management
+├── pages/            # Page components
+├── App.js
+└── index.js
+
+========================================
+TROUBLESHOOTING
+========================================
+
+If npm commands don't work:
+1. Make sure Node.js is installed
+2. Use CMD, not PowerShell
+3. Run as Administrator if needed
+
+If port 3000 or 5000 is busy:
+- Close other applications using these ports
+- Or change ports in package.json
+
+========================================
+DEVELOPMENT TIME: ~3 HOURS
+========================================
+
+Ready to code! 🚀

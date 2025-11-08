@@ -1,0 +1,167 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "patient@test.com",
+      "password": "password123",
+      "role": "patient",
+      "name": "John Wick",
+      "age": 35,
+      "allergies": "Penicillin",
+      "medications": "Lisinopril 10mg",
+      "phone": "555-0101"
+    },
+    {
+      "id": 2,
+      "email": "provider@test.com",
+      "password": "password123",
+      "role": "provider",
+      "name": "Dr. Sarah Smith",
+      "specialty": "General Practice"
+    },
+    {
+      "id": 3,
+      "email": "jane@test.com",
+      "password": "password123",
+      "role": "patient",
+      "name": "Jane Wilson",
+      "age": 42,
+      "allergies": "None",
+      "medications": "Metformin 500mg",
+      "phone": "555-0102"
+    },
+    {
+      "role": "patient",
+      "consent": true,
+      "name": "PatientDemo",
+      "email": "patient@test.com",
+      "password": "Patient@123",
+      "age": "35",
+      "phone": "7894561230",
+      "allergies": "Penicillin,",
+      "medications": "Lisinopril 10mg",
+      "id": 4
+    }
+  ],
+  "goals": [
+    {
+      "id": 1,
+      "userId": 1,
+      "date": "2025-11-08",
+      "steps": 8500,
+      "waterIntake": 7,
+      "sleepHours": 7.5
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "date": "2025-11-07",
+      "steps": 10200,
+      "waterIntake": 8,
+      "sleepHours": 8
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "date": "2025-11-06",
+      "steps": 6800,
+      "waterIntake": 6,
+      "sleepHours": 6.5
+    },
+    {
+      "id": 4,
+      "userId": 3,
+      "date": "2025-11-08",
+      "steps": 5200,
+      "waterIntake": 5,
+      "sleepHours": 7
+    },
+    {
+      "userId": 4,
+      "date": "2025-11-06",
+      "steps": 5000,
+      "waterIntake": 5,
+      "sleepHours": 6,
+      "id": 5
+    },
+    {
+      "userId": 4,
+      "date": "2025-11-08",
+      "steps": 3000,
+      "waterIntake": 5,
+      "sleepHours": 0,
+      "id": 6
+    }
+  ],
+  "reminders": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "Annual Blood Test",
+      "date": "2025-11-15",
+      "status": "pending",
+      "type": "lab"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "title": "Dental Checkup",
+      "date": "2025-11-20",
+      "status": "pending",
+      "type": "dental"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "title": "Eye Exam",
+      "date": "2025-12-01",
+      "status": "pending",
+      "type": "vision"
+    },
+    {
+      "id": 4,
+      "userId": 3,
+      "title": "Annual Physical",
+      "date": "2025-11-10",
+      "status": "completed",
+      "type": "checkup"
+    }
+  ],
+  "patients": [
+    {
+      "id": 1,
+      "providerId": 2,
+      "patientId": 1,
+      "name": "John Doe",
+      "compliance": "good",
+      "lastCheckup": "2025-10-15",
+      "missedAppointments": 0
+    },
+    {
+      "id": 2,
+      "providerId": 2,
+      "patientId": 3,
+      "name": "Jane Wilson",
+      "compliance": "excellent",
+      "lastCheckup": "2025-11-08",
+      "missedAppointments": 0
+    }
+  ],
+  "healthTips": [
+    {
+      "id": 1,
+      "date": "2025-11-08",
+      "tip": "Drink at least 8 glasses of water daily to stay hydrated and support your body's natural functions."
+    },
+    {
+      "id": 2,
+      "date": "2025-11-07",
+      "tip": "Aim for 7-9 hours of quality sleep each night to boost your immune system and mental clarity."
+    },
+    {
+      "id": 3,
+      "date": "2025-11-06",
+      "tip": "Take a 10-minute walk after meals to improve digestion and regulate blood sugar levels."
+    }
+  ]
+}

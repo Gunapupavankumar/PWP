@@ -1,0 +1,4 @@
+@echo off
+echo Starting React App...
+cd /d "%~dp0"
+call npm start
