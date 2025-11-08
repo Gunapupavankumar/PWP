@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Healthcare Wellness Portal
 
 A modern React-based healthcare wellness and preventive care portal with Tailwind CSS and JSON Server backend.
@@ -163,3 +164,7 @@ The application is fully responsive and works seamlessly on:
 4. Integrate with real healthcare APIs
 5. Add push notifications for reminders
 6. Implement data export functionality
+=======
+# PWP
+Hackathon-Project
+>>>>>>> 3559afc7a5776174ac3a8cf6d350854fe0358864
