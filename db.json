@@ -9,7 +9,8 @@
       "age": 35,
       "allergies": "Penicillin",
       "medications": "Lisinopril 10mg",
-      "phone": "555-0101"
+      "phone": "555-0101",
+      "providerId": 2
     },
     {
       "id": 2,
@@ -28,19 +29,50 @@
       "age": 42,
       "allergies": "None",
       "medications": "Metformin 500mg",
-      "phone": "555-0102"
+      "phone": "555-0102",
+      "providerId": 2
+    },
+    {
+      "id": 4,
+      "role": "patient",
+      "consent": true,
+      "name": "PatientDemo",
+      "email": "patientdemo@test.com",
+      "password": "Patient@123",
+      "age": "35",
+      "phone": "7894561230",
+      "allergies": "Penicillin",
+      "medications": "Lisinopril 10mg",
+      "providerId": 2
+    },
+    {
+      "id": 5,
+      "email": "provider2@test.com",
+      "password": "password123",
+      "role": "provider",
+      "name": "Dr. Michael Johnson",
+      "specialty": "Cardiology"
+    },
+    {
+      "id": 6,
+      "email": "provider3@test.com",
+      "password": "password123",
+      "role": "provider",
+      "name": "Dr. Emily Chen",
+      "specialty": "Family Medicine"
     },
     {
       "role": "patient",
       "consent": true,
-      "name": "PatientDemo",
-      "email": "patient@test.com",
+      "providerId": "2",
+      "name": "TestPatient",
+      "email": "patient1@mail.com",
       "password": "Patient@123",
-      "age": "35",
-      "phone": "7894561230",
-      "allergies": "Penicillin,",
+      "age": "25",
+      "phone": "7894561235",
+      "allergies": "Penicillin",
       "medications": "Lisinopril 10mg",
-      "id": 4
+      "id": 7
     }
   ],
   "goals": [
@@ -75,6 +107,14 @@
       "waterIntake": 5,
       "sleepHours": 0,
       "id": 6
+    },
+    {
+      "userId": 7,
+      "date": "2025-11-08",
+      "steps": 5000,
+      "waterIntake": 6,
+      "sleepHours": 6,
+      "id": 7
     }
   ],
   "reminders": [
@@ -116,10 +156,37 @@
       "id": 1,
       "providerId": 2,
       "patientId": 1,
-      "name": "John Doe",
+      "name": "John Wick",
       "compliance": "good",
       "lastCheckup": "2025-10-15",
       "missedAppointments": 0
+    },
+    {
+      "id": 2,
+      "providerId": 2,
+      "patientId": 3,
+      "name": "Jane Wilson",
+      "compliance": "excellent",
+      "lastCheckup": "2025-11-08",
+      "missedAppointments": 0
+    },
+    {
+      "id": 3,
+      "providerId": 2,
+      "patientId": 4,
+      "name": "PatientDemo",
+      "compliance": "good",
+      "lastCheckup": "2025-11-01",
+      "missedAppointments": 0
+    },
+    {
+      "providerId": 2,
+      "patientId": 7,
+      "name": "TestPatient",
+      "compliance": "good",
+      "lastCheckup": "2025-11-08",
+      "missedAppointments": 0,
+      "id": 4
     }
   ],
   "healthTips": [
@@ -137,6 +204,32 @@
       "id": 3,
       "date": "2025-11-06",
       "tip": "Take a 10-minute walk after meals to improve digestion and regulate blood sugar levels."
+    }
+  ],
+  "providerComments": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "providerId": 2,
+      "providerName": "Dr. Sarah Smith",
+      "goalId": 3,
+      "goalDate": "2025-11-06",
+      "comment": "Great progress on your steps! Try to increase water intake to 8 glasses.",
+      "date": "2025-11-07",
+      "read": true,
+      "type": "feedback"
+    },
+    {
+      "patientId": 7,
+      "providerId": 2,
+      "providerName": "Dr. Sarah Smith",
+      "goalId": 7,
+      "goalDate": "2025-11-08",
+      "comment": "try to do at least 10000 steps per day and 8 glasses of water and 8 hrs of sleep",
+      "date": "2025-11-08",
+      "read": true,
+      "type": "feedback",
+      "id": 2
     }
   ]
 }

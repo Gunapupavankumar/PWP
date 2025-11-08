@@ -31,9 +31,18 @@ export const ApiProvider = ({ children }) => {
 
   // Patients APIs
   const getPatients = (params) => axios.get(`${API_BASE_URL}/patients`, { params });
+  const createPatientRecord = (data) => axios.post(`${API_BASE_URL}/patients`, data);
 
   // Health Tips APIs
   const getHealthTips = () => axios.get(`${API_BASE_URL}/healthTips`);
+
+  // Get all providers
+  const getProviders = () => axios.get(`${API_BASE_URL}/users?role=provider`);
+
+  // Provider Comments APIs
+  const getProviderComments = (params) => axios.get(`${API_BASE_URL}/providerComments`, { params });
+  const createProviderComment = (data) => axios.post(`${API_BASE_URL}/providerComments`, data);
+  const markCommentAsRead = (id) => axios.patch(`${API_BASE_URL}/providerComments/${id}`, { read: true });
 
   const value = {
     getUsers,
@@ -46,7 +55,12 @@ export const ApiProvider = ({ children }) => {
     getReminders,
     updateReminder,
     getPatients,
+    createPatientRecord,
     getHealthTips,
+    getProviders,
+    getProviderComments,
+    createProviderComment,
+    markCommentAsRead,
   };
 
   return <ApiContext.Provider value={value}>{children}</ApiContext.Provider>;

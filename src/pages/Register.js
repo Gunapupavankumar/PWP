@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
@@ -8,8 +8,9 @@ import Button from '../components/Button';
 
 const Register = () => {
   const [error, setError] = useState('');
+  const [providers, setProviders] = useState([]);
   const { register: registerUser } = useAuth();
-  const { createUser } = useApi();
+  const { createUser, getProviders, createPatientRecord } = useApi();
   const navigate = useNavigate();
   
   const {
@@ -20,11 +21,26 @@ const Register = () => {
   } = useForm({
     defaultValues: {
       role: 'patient',
-      consent: false
+      consent: false,
+      providerId: ''
     }
   });
 
   const selectedRole = watch('role');
+
+  useEffect(() => {
+    // Fetch providers when component mounts
+    fetchProviders();
+  }, []);
+
+  const fetchProviders = async () => {
+    try {
+      const response = await getProviders();
+      setProviders(response.data);
+    } catch (error) {
+      console.error('Error fetching providers:', error);
+    }
+  };
 
   const onSubmit = async (data) => {
     setError('');
@@ -34,9 +50,31 @@ const Register = () => {
       return;
     }
 
+    // For patients, ensure provider is selected
+    if (data.role === 'patient' && !data.providerId) {
+      setError('Please select a healthcare provider');
+      return;
+    }
+
     const result = await registerUser(data, createUser);
     
     if (result.success) {
+      // If patient, create patient record for provider dashboard
+      if (data.role === 'patient' && data.providerId) {
+        try {
+          await createPatientRecord({
+            providerId: parseInt(data.providerId),
+            patientId: result.user.id,
+            name: data.name,
+            compliance: 'good',
+            lastCheckup: new Date().toISOString().split('T')[0],
+            missedAppointments: 0
+          });
+        } catch (error) {
+          console.error('Error creating patient record:', error);
+        }
+      }
+      
       navigate('/login');
     } else {
       setError(result.message);
@@ -117,6 +155,26 @@ const Register = () => {
 
           {selectedRole === 'patient' && (
             <>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Healthcare Provider <span className="text-red-500">*</span>
+                </label>
+                <select 
+                  className={`input ${errors.providerId ? 'border-red-500' : ''}`}
+                  {...register('providerId', { 
+                    required: selectedRole === 'patient' ? 'Please select a healthcare provider' : false 
+                  })}
+                >
+                  <option value="">-- Select a Provider --</option>
+                  {providers.map(provider => (
+                    <option key={provider.id} value={provider.id}>
+                      {provider.name} - {provider.specialty}
+                    </option>
+                  ))}
+                </select>
+                {errors.providerId && <p className="mt-1 text-sm text-red-500">{errors.providerId.message}</p>}
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <Input
                   label="Age"

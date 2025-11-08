@@ -9,10 +9,11 @@ import Button from '../components/Button';
 
 const PatientDashboard = () => {
   const { user, logout } = useAuth();
-  const { getGoals, getReminders, getHealthTips } = useApi();
+  const { getGoals, getReminders, getHealthTips, getProviderComments, markCommentAsRead } = useApi();
   const navigate = useNavigate();
   const [goals, setGoals] = useState([]);
   const [reminders, setReminders] = useState([]);
+  const [providerComments, setProviderComments] = useState([]);
   const [healthTip, setHealthTip] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -22,14 +23,16 @@ const PatientDashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [goalsRes, remindersRes, tipsRes] = await Promise.all([
+      const [goalsRes, remindersRes, tipsRes, commentsRes] = await Promise.all([
         getGoals({ userId: user.id }),
         getReminders({ userId: user.id }),
-        getHealthTips()
+        getHealthTips(),
+        getProviderComments({ patientId: user.id })
       ]);
 
       setGoals(goalsRes.data.reverse());
       setReminders(remindersRes.data.filter(r => r.status === 'pending'));
+      setProviderComments(commentsRes.data.reverse());
       
       const today = new Date().toISOString().split('T')[0];
       const todayTip = tipsRes.data.find(t => t.date === today);
@@ -38,6 +41,20 @@ const PatientDashboard = () => {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleMarkAsRead = async (commentId) => {
+    try {
+      await markCommentAsRead(commentId);
+      // Update local state
+      setProviderComments(prevComments =>
+        prevComments.map(comment =>
+          comment.id === commentId ? { ...comment, read: true } : comment
+        )
+      );
+    } catch (error) {
+      console.error('Error marking comment as read:', error);
     }
   };
 
@@ -112,28 +129,83 @@ const PatientDashboard = () => {
             </div>
           </div>
 
-          {/* Preventive Care Reminders */}
+          {/* Preventive Care Reminders & Provider Comments */}
           <div className="mb-8">
-            <Card title="Preventive Care Reminders" icon="🔔">
-              {reminders.length > 0 ? (
-                <ul className="space-y-3">
-                  {reminders.map(reminder => (
-                    <li key={reminder.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                      <span className="text-2xl">
-                        {reminder.type === 'lab' && '🧪'}
-                        {reminder.type === 'dental' && '🦷'}
-                        {reminder.type === 'vision' && '👁️'}
-                        {reminder.type === 'checkup' && '🏥'}
-                      </span>
-                      <div className="flex-1">
-                        <p className="font-semibold text-gray-900">{reminder.title}</p>
-                        <p className="text-sm text-gray-600">Upcoming: {reminder.date}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-600">No upcoming appointments</p>
+            <Card title="🔔 Notifications & Reminders" icon="">
+              {/* Provider Comments/Feedback */}
+              {providerComments.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <span>💬</span> Provider Feedback
+                  </h4>
+                  <ul className="space-y-3">
+                    {providerComments.map(comment => (
+                      <li 
+                        key={comment.id} 
+                        className={`flex items-start gap-3 p-4 rounded-lg border-2 ${
+                          comment.read 
+                            ? 'bg-gray-50 border-gray-200' 
+                            : 'bg-blue-50 border-blue-300'
+                        }`}
+                      >
+                        <span className="text-2xl">👨‍⚕️</span>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-start mb-2">
+                            <p className="font-semibold text-gray-900">{comment.providerName}</p>
+                            {!comment.read && (
+                              <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full">
+                                New
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-700 mb-2">{comment.comment}</p>
+                          <div className="flex justify-between items-center">
+                            <p className="text-xs text-gray-500">
+                              Regarding goals from {comment.goalDate} • {comment.date}
+                            </p>
+                            {!comment.read && (
+                              <button
+                                onClick={() => handleMarkAsRead(comment.id)}
+                                className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                              >
+                                Mark as read
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Preventive Care Reminders */}
+              {reminders.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <span>📅</span> Upcoming Appointments
+                  </h4>
+                  <ul className="space-y-3">
+                    {reminders.map(reminder => (
+                      <li key={reminder.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                        <span className="text-2xl">
+                          {reminder.type === 'lab' && '🧪'}
+                          {reminder.type === 'dental' && '🦷'}
+                          {reminder.type === 'vision' && '👁️'}
+                          {reminder.type === 'checkup' && '🏥'}
+                        </span>
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">{reminder.title}</p>
+                          <p className="text-sm text-gray-600">Upcoming: {reminder.date}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {reminders.length === 0 && providerComments.length === 0 && (
+                <p className="text-gray-600">No notifications or upcoming appointments</p>
               )}
             </Card>
           </div>
